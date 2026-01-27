@@ -1,0 +1,9 @@
+name: 'AI Migration Word'
+type: module
+description: 'Migrate content from Word documents (.docx) using AI-powered content extraction.'
+core_version_requirement: ^10 || ^11
+package: 'Migration'
+dependencies:
+  - drupal:ai_migration
+  - drupal:migrate_plus
+

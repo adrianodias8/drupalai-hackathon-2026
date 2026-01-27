@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Contains hooks and functionality for the AI Migration Word module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function ai_migration_word_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.ai_migration_word':
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The AI Migration Word module provides migration capabilities for Word documents (.docx) using AI-powered content extraction.') . '</p>';
+      $output .= '<h3>' . t('Usage') . '</h3>';
+      $output .= '<p>' . t('Place your Word documents in a directory accessible to Drupal, then configure the migration YAML file with the file paths. The module uses PHPWord to extract text content and AI to transform it into structured Drupal entities.') . '</p>';
+      return $output;
+  }
+}
+
