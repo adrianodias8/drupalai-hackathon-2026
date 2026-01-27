@@ -1,0 +1,61 @@
+FROM php:8.3-apache
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    libonig-dev \
+    libxml2-dev \
+    mariadb-client \
+    git \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configure and install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+    gd \
+    pdo_mysql \
+    opcache \
+    zip \
+    intl \
+    bcmath \
+    soap
+
+# Enable Apache modules
+RUN a2enmod rewrite headers
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Environment variables for Apache
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/web
+
+# Update Apache configuration to point to the correct docroot
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Allow override of Apache settings
+RUN echo '<Directory /var/www/html/web>' >> /etc/apache2/conf-available/drupal.conf && \
+    echo '    AllowOverride All' >> /etc/apache2/conf-available/drupal.conf && \
+    echo '    Require all granted' >> /etc/apache2/conf-available/drupal.conf && \
+    echo '</Directory>' >> /etc/apache2/conf-available/drupal.conf && \
+    a2enconf drupal
+
+# Copy project files
+COPY . .
+
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Create files directory and set permissions
+RUN mkdir -p web/sites/default/files && \
+    chown -R www-data:www-data web/sites/default/files && \
+    chmod -R 775 web/sites/default/files
+
+EXPOSE 80

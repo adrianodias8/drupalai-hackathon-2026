@@ -1,0 +1,38 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    image: drupalai-hackathon-prod:latest
+    restart: always
+    environment:
+      - DB_DRIVER=mysql
+      - DB_HOST=db
+      - DB_NAME=drupal
+      - DB_USER=drupal
+      - DB_PASSWORD=drupal
+      - DB_PORT=3306
+      - HASH_SALT=${HASH_SALT:-changemenow}
+      - DRUPAL_TRUSTED_HOST_PATTERNS=${DRUPAL_TRUSTED_HOST_PATTERNS:-^localhost$}
+    volumes:
+      - drupal-files:/var/www/html/web/sites/default/files
+    depends_on:
+      - db
+    ports:
+      - "8000:80"
+
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_DATABASE=drupal
+      - MYSQL_USER=drupal
+      - MYSQL_PASSWORD=drupal
+      - MYSQL_ROOT_PASSWORD=drupalroot
+    volumes:
+      - drupal-db:/var/lib/mysql
+
+volumes:
+  drupal-files:
+  drupal-db:

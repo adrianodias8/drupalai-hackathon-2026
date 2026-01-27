@@ -872,3 +872,8 @@ if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev
 # if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
 #   include $app_root . '/' . $site_path . '/settings.local.php';
 # }
+
+// Include production settings if available.
+if (file_exists(__DIR__ . '/settings.prod.php')) {
+  include __DIR__ . '/settings.prod.php';
+}
