@@ -3,7 +3,6 @@ _core:
 module:
   ai: 0
   ai_migration: 0
-  ai_migration_example: 0
   ai_provider_amazeeio: 0
   ai_qa_gate: 0
   ai_search: 0
