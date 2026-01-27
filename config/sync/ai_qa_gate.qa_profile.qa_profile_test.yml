@@ -1,0 +1,89 @@
+uuid: 228e011d-0b2a-4ce9-bd42-05351475ed8d
+langcode: en
+status: true
+dependencies: {  }
+id: qa_profile_test
+label: 'QA Profile test'
+enabled: true
+target_entity_type_id: node
+target_bundle: page
+fields_to_analyze:
+  -
+    field_name: field_content
+    weight: 0
+    include_label: true
+    include_referenced_labels: false
+    strip_html: true
+  -
+    field_name: field_description
+    weight: 0
+    include_label: true
+    include_referenced_labels: false
+    strip_html: true
+  -
+    field_name: title
+    weight: 0
+    include_label: true
+    include_referenced_labels: false
+    strip_html: true
+include_meta:
+  include_entity_label: true
+  include_langcode: true
+  include_bundle: true
+  include_moderation_state: true
+  include_taxonomy_labels: false
+policy_ids:
+  - ec_accessibility_clarity
+  - ec_digital_policy_baseline
+  - ec_legislative_precision
+  - ec_neutral_tone
+reports_enabled:
+  -
+    plugin_id: claims_regulatory_precision
+    enabled: true
+    configuration:
+      check_absolute_claims: 1
+      check_legislative_status: 1
+      check_legal_interpretation: 1
+      check_attribution: 1
+  -
+    plugin_id: tone_neutrality_institutional
+    enabled: true
+    configuration:
+      check_promotional_language: 1
+      check_political_bias: 1
+      check_emotional_language: 1
+      check_self_congratulatory: 1
+  -
+    plugin_id: accessibility_clarity
+    enabled: true
+    configuration:
+      check_acronyms: 1
+      check_jargon: 1
+      check_sentence_length: 1
+      max_sentence_words: '25'
+      check_readability: 1
+  -
+    plugin_id: pii_policy
+    enabled: true
+    configuration:
+      check_pii: 1
+      check_contact_info: 1
+      check_internal_references: 1
+      check_confidential_markers: 1
+ai_settings:
+  provider_id: amazeeio
+  model: mistral-large-latest
+  temperature: 0.2
+  max_tokens: 30000
+execution_settings:
+  run_mode: sync
+  cache_ttl_seconds: 0
+gating_settings:
+  gating_enabled: false
+  severity_threshold: high
+  block_transition_ids: {  }
+  require_acknowledgement: false
+  acknowledgement_field: null
+access_settings:
+  roles_allowed_to_run: {  }

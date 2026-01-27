@@ -1,0 +1,31 @@
+uuid: d95f9388-251e-4687-ad37-18961f968e72
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_subjects
+    - node.type.complex_content_migration
+    - taxonomy.vocabulary.subjects
+_core:
+  default_config_hash: t12vzRpioJ35WybGZhO6qX0LAPtZ9ueWe8Tceyeg1kc
+id: node.complex_content_migration.field_subjects
+field_name: field_subjects
+entity_type: node
+bundle: complex_content_migration
+label: Subjects
+description: 'These are a list of subjects in the HTML. Each item is a different subject. The subjects are separated by commas.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      subjects: subjects
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

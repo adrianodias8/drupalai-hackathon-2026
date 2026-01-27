@@ -1,0 +1,30 @@
+uuid: 0c83a8dc-2a6c-4f5f-85c5-01bf6ef38f3c
+langcode: en
+status: true
+dependencies:
+  config:
+    - ai_provider_amazeeio.settings
+  module:
+    - ai_provider_amazeeio
+    - ai_search
+id: test
+name: test
+description: ''
+backend: search_api_ai_search
+backend_config:
+  chat_model: amazeeio__mistral-large-latest
+  database: amazeeio_vector_db
+  database_settings:
+    collection: amazee_ai
+    metric: cosine_similarity
+  embeddings_engine: amazeeio__mistral-embed
+  embeddings_engine_configuration:
+    set_dimensions: false
+    dimensions: 1024
+  embedding_strategy: contextual_chunks
+  embedding_strategy_configuration:
+    chunk_size: '500'
+    chunk_min_overlap: '100'
+    contextual_content_max_percentage: '30'
+  embedding_strategy_details: ''
+  include_raw_embedding_vector: false

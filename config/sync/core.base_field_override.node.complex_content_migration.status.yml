@@ -1,0 +1,24 @@
+uuid: 112c7374-35eb-42d4-b52b-f003492ba97a
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.complex_content_migration
+_core:
+  default_config_hash: Gbv5Hh-KrFiE8G9rTppfHWBTW9Wzfg0iV_nloFZN4fY
+id: node.complex_content_migration.status
+field_name: status
+entity_type: node
+bundle: complex_content_migration
+label: Published
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

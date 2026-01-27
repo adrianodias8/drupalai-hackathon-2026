@@ -1,0 +1,8 @@
+_core:
+  default_config_hash: UHH_bUOb_RfqXW9sc16A9qWrsASHobx3kiZnU9d6g9c
+default_run_mode: queue
+log_ai_requests: false
+plugin_backoff_seconds: 5
+retry_on_rate_limit: true
+max_retries: 3
+retry_backoff_multiplier: 2.0

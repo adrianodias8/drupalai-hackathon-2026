@@ -1,0 +1,21 @@
+uuid: 9f6a5e03-519e-4210-b6c7-797255056fc3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_author
+    - node.type.simple_content_migration
+_core:
+  default_config_hash: cEDrOb10q8s9SqqncCGPkpwJbptBXs5EKlkLyTNXk3w
+id: node.simple_content_migration.field_author
+field_name: field_author
+entity_type: node
+bundle: simple_content_migration
+label: Byline
+description: "This is the author of the post content. \r\n\r\nThere are two bylines on the page. IGNORE \"By CivicActions\".  \r\n\r\nOnly include the name Firstname Lastname from \"By Firstname Lastname\". If there are more than one author, include all of them.\r\n\r\nDO NOT ever include CivicActions."
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

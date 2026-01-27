@@ -1,0 +1,20 @@
+uuid: 654b0776-3499-4984-b8b0-2b450743f525
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+_core:
+  default_config_hash: nPLfc9c5RwzB2g6SHs45UP2TdjaRRJC_--ee8w6yvI8
+name: 'Simple Content Migration'
+type: simple_content_migration
+description: "An simple example content type to demonstrate the AI Migration module's capabilities."
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

@@ -2,7 +2,11 @@ _core:
   default_config_hash: 4GIX5Esnc_umpXUBj4IIocRX7Mt5fPhm4AgXfE3E56E
 module:
   ai: 0
+  ai_migration: 0
+  ai_migration_example: 0
   ai_provider_amazeeio: 0
+  ai_qa_gate: 0
+  ai_search: 0
   announcements_feed: 0
   automated_cron: 0
   automatic_updates: 0
@@ -52,6 +56,7 @@ module:
   inline_form_errors: 0
   jquery_ui: 0
   jquery_ui_resizable: 0
+  jsonapi: 0
   key: 0
   klaro: 0
   layout_builder: 0
@@ -67,6 +72,8 @@ module:
   menu_link_attributes: 0
   menu_link_content: 0
   menu_ui: 0
+  migrate: 0
+  migrate_plus: 0
   modeler_api: 0
   mysql: 0
   navigation: 0
@@ -84,6 +91,10 @@ module:
   sam: 0
   scheduler: 0
   scheduler_content_moderation_integration: 0
+  schemata: 0
+  schemata_json_schema: 0
+  search_api: 0
+  serialization: 0
   svg_image: 0
   symfony_mailer_lite: 0
   system: 0
