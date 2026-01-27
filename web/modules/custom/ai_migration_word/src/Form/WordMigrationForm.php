@@ -238,14 +238,6 @@ class WordMigrationForm extends FormBase {
       );
 
       if ($result && !empty($result)) {
-        // Process text fields to ensure format is set.
-        $result = $this->ensureTextFormat($result, $target_bundle);
-
-        // Debug: log the result after processing.
-        \Drupal::logger('ai_migration_word')->debug('Result after ensureTextFormat: @data', [
-          '@data' => print_r($result, TRUE),
-        ]);
-
         // Create the node.
         $node = $this->entityTypeManager->getStorage('node')->create([
           'type' => $target_bundle,
@@ -345,107 +337,6 @@ class WordMigrationForm extends FormBase {
     }
 
     return $text;
-  }
-
-  /**
-   * Ensures text fields have a format set.
-   *
-   * @param array $data
-   *   The entity data array from AI.
-   * @param string $bundle
-   *   The target content type bundle.
-   *
-   * @return array
-   *   The processed data with text formats set.
-   */
-  protected function ensureTextFormat(array $data, string $bundle): array {
-    // Get field definitions for this bundle.
-    $field_definitions = $this->entityFieldManager->getFieldDefinitions('node', $bundle);
-
-    // Text field types that require a format.
-    $text_field_types = [
-      'text_with_summary',
-      'text_long',
-      'text',
-    ];
-
-    // Determine the default format to use.
-    $default_format = $this->getDefaultTextFormat();
-
-    \Drupal::logger('ai_migration_word')->debug('ensureTextFormat: bundle=@bundle, default_format=@format, input_data_keys=@keys', [
-      '@bundle' => $bundle,
-      '@format' => $default_format,
-      '@keys' => implode(', ', array_keys($data)),
-    ]);
-
-    foreach ($field_definitions as $field_name => $field_definition) {
-      $field_type = $field_definition->getType();
-
-      // Check if this is a text field that requires format.
-      if (in_array($field_type, $text_field_types)) {
-        \Drupal::logger('ai_migration_word')->debug('Found text field: @name (type: @type), exists in data: @exists', [
-          '@name' => $field_name,
-          '@type' => $field_type,
-          '@exists' => isset($data[$field_name]) ? 'yes' : 'no',
-        ]);
-
-        if (isset($data[$field_name])) {
-          $field_value = $data[$field_name];
-
-          \Drupal::logger('ai_migration_word')->debug('Field @name value structure: @structure', [
-            '@name' => $field_name,
-            '@structure' => print_r($field_value, TRUE),
-          ]);
-
-          // Handle array format (single or multiple values).
-          if (is_array($field_value)) {
-            // Check if it's a multi-value field (indexed array with numeric keys).
-            if (isset($field_value[0]) && is_array($field_value[0])) {
-              // Multiple values - iterate through each delta.
-              foreach ($field_value as $delta => $value) {
-                if (is_array($value) && array_key_exists('value', $value)) {
-                  // Set format if missing or empty.
-                  if (!array_key_exists('format', $value) || empty($value['format'])) {
-                    \Drupal::logger('ai_migration_word')->debug('Setting format for @name[@delta] to @format', [
-                      '@name' => $field_name,
-                      '@delta' => $delta,
-                      '@format' => $default_format,
-                    ]);
-                    $data[$field_name][$delta]['format'] = $default_format;
-                  }
-                }
-              }
-            }
-            elseif (array_key_exists('value', $field_value)) {
-              // Single value with 'value' key - check if format is missing or empty.
-              if (!array_key_exists('format', $field_value) || empty($field_value['format'])) {
-                \Drupal::logger('ai_migration_word')->debug('Setting format for @name to @format (single value)', [
-                  '@name' => $field_name,
-                  '@format' => $default_format,
-                ]);
-                $data[$field_name]['format'] = $default_format;
-              }
-            }
-            elseif (isset($field_value[0]) && is_string($field_value[0])) {
-              // Array of string values - convert to proper format.
-              $data[$field_name] = [
-                'value' => implode("\n", $field_value),
-                'format' => $default_format,
-              ];
-            }
-          }
-          elseif (is_string($field_value)) {
-            // Plain string value, convert to proper format.
-            $data[$field_name] = [
-              'value' => $field_value,
-              'format' => $default_format,
-            ];
-          }
-        }
-      }
-    }
-
-    return $data;
   }
 
   /**

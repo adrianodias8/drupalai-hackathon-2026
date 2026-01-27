@@ -3,6 +3,8 @@
 namespace Drupal\ai_migration_word;
 
 use Drupal\ai_migration\AiMigrator;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Extended AI Migrator for Word documents.
@@ -11,6 +13,45 @@ use Drupal\ai_migration\AiMigrator;
  * and explanatory text before/after the JSON.
  */
 class AiMigratorWord extends AiMigrator {
+
+  /**
+   * The entity field manager.
+   *
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
+   */
+  protected EntityFieldManagerInterface $entityFieldManager;
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(
+    $aiProviderPluginManager,
+    $aiMigrationCacheProvider,
+    $loggerChannelFactory,
+    $httpClientFactory,
+    $serializer,
+    $schemaFactory,
+    EntityFieldManagerInterface $entityFieldManager,
+    EntityTypeManagerInterface $entityTypeManager,
+  ) {
+    parent::__construct(
+      $aiProviderPluginManager,
+      $aiMigrationCacheProvider,
+      $loggerChannelFactory,
+      $httpClientFactory,
+      $serializer,
+      $schemaFactory
+    );
+    $this->entityFieldManager = $entityFieldManager;
+    $this->entityTypeManager = $entityTypeManager;
+  }
 
   /**
    * {@inheritdoc}
@@ -61,7 +102,8 @@ class AiMigratorWord extends AiMigrator {
 
       // Convert to an array and make sure text formats are set.
       $data = $entity->toArray();
-      $data = $this->applyTextFormatDefaults($data, 'content_format');
+      $default_format = $this->getDefaultTextFormat();
+      $data = $this->applyTextFormatDefaults($data, $bundle, $default_format);
 
       // Return the entity as an array ready for migration.
       return $data;
@@ -76,42 +118,107 @@ class AiMigratorWord extends AiMigrator {
   }
 
   /**
-   * Applies default text formats to fields missing a format.
+   * Applies default text formats to text fields missing a format.
    *
-   * This is a lightweight version of the logic used in the form submit handler.
-   * It does not rely on field definitions – instead it looks for common text
-   * field structures (arrays that contain a "value" key) and sets the
-   * "format" to the provided default when it is missing or empty.
+   * Only applies formats to fields that actually require them (text fields),
+   * and specifically ensures field_content uses content_format.
    *
    * @param array $data
    *   The entity data array as returned by ->toArray().
+   * @param string $bundle
+   *   The bundle name to check field definitions.
    * @param string $default_format
    *   The machine name of the default text format to use.
    *
    * @return array
    *   The processed data with formats ensured.
    */
-  protected function applyTextFormatDefaults(array $data, string $default_format): array {
-    foreach ($data as $field_name => $field_value) {
-      // Multi-value text field: [ [ 'value' => '...', 'format' => '' ], ... ].
+  protected function applyTextFormatDefaults(array $data, string $bundle, string $default_format): array {
+    // Get field definitions for this bundle.
+    $field_definitions = $this->entityFieldManager->getFieldDefinitions('node', $bundle);
+
+    // Text field types that require a format.
+    $text_field_types = [
+      'text_with_summary',
+      'text_long',
+      'text',
+    ];
+
+    foreach ($field_definitions as $field_name => $field_definition) {
+      $field_type = $field_definition->getType();
+
+      // Only process text fields that require a format.
+      if (!in_array($field_type, $text_field_types)) {
+        continue;
+      }
+
+      // Skip if field doesn't exist in data.
+      if (!isset($data[$field_name])) {
+        continue;
+      }
+
+      $field_value = $data[$field_name];
+
+      // Handle multi-value text fields.
       if (is_array($field_value) && isset($field_value[0]) && is_array($field_value[0])) {
         foreach ($field_value as $delta => $value) {
           if (is_array($value) && array_key_exists('value', $value)) {
-            if (!array_key_exists('format', $value) || empty($value['format'])) {
+            
+            // For field_content, always use content_format.
+            // For other text fields, use default_format if format is missing or empty.
+            // For now we force this here as a workaround to ensure the content_format is used.
+            if ($field_name === 'field_content') {
+              $data[$field_name][$delta]['format'] = $default_format;
+            }
+            elseif (!array_key_exists('format', $value) || empty($value['format'])) {
               $data[$field_name][$delta]['format'] = $default_format;
             }
           }
         }
       }
-      // Single-value text field: [ 'value' => '...', 'format' => '' ].
+      // Handle single-value text fields.
       elseif (is_array($field_value) && array_key_exists('value', $field_value)) {
-        if (!array_key_exists('format', $field_value) || empty($field_value['format'])) {
+        // For field_content, always use content_format.
+        // For other text fields, use default_format if format is missing or empty.
+        if ($field_name === 'field_content') {
+          $data[$field_name]['format'] = $default_format;
+        }
+        elseif (!array_key_exists('format', $field_value) || empty($field_value['format'])) {
           $data[$field_name]['format'] = $default_format;
         }
       }
     }
 
     return $data;
+  }
+
+  /**
+   * Gets the default text format from available formats in the installation.
+   *
+   * @return string
+   *   The machine name of the default text format.
+   */
+  protected function getDefaultTextFormat(): string {
+    $format_storage = $this->entityTypeManager->getStorage('filter_format');
+    
+    // Get all enabled filter formats available in the installation.
+    $formats = $format_storage->loadByProperties(['status' => TRUE]);
+    
+    if (!empty($formats)) {
+      // Sort formats by weight (lower weight = higher priority).
+      uasort($formats, function ($a, $b) {
+        /** @var \Drupal\filter\FilterFormatInterface $a */
+        /** @var \Drupal\filter\FilterFormatInterface $b */
+        return $a->get('weight') <=> $b->get('weight');
+      });
+      
+      // Return the first format (lowest weight).
+      $format = reset($formats);
+      return $format->id();
+    }
+
+    // Last resort fallback if no formats exist (shouldn't happen in normal Drupal).
+    return 'plain_text';
   }
 
 }

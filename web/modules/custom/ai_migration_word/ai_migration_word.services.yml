@@ -10,4 +10,6 @@ services:
       - '@http_client_factory'
       - '@serializer'
       - '@schemata.schema_factory'
+      - '@entity_field.manager'
+      - '@entity_type.manager'
 
