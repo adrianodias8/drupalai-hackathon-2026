@@ -1,0 +1,13 @@
+rag_minimal.admin:
+  title: 'Find References'
+  description: 'Find similar content via the vector index.'
+  route_name: rag_minimal.form
+  parent: system.admin_config
+  weight: 10
+
+rag_minimal.test:
+  title: 'AI QA Gate'
+  description: 'Configure AI-powered content quality assurance profiles and policies.'
+  route_name: rag_minimal.admin_profiles
+  parent: system.admin_config
+  weight: 50

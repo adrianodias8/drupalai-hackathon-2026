@@ -1,0 +1,10 @@
+rag_minimal_ui:
+  version: 1.x
+  js:
+    js/rag_minimal_ui.js: {}
+  css:
+    theme:
+      css/rag_minimal_ui.css: {}
+  dependencies:
+    - core/drupal
+    - core/jquery

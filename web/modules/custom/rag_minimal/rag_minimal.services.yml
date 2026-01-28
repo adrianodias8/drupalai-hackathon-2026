@@ -1,0 +1,4 @@
+services:
+  rag_minimal.rag:
+    class: Drupal\rag_minimal\Service\RagMinimalRag
+    arguments: ['@ai.provider']
