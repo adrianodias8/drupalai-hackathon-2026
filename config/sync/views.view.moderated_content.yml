@@ -284,6 +284,53 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
+        qa_run_id:
+          id: qa_run_id
+          table: qa_run
+          field: id
+          relationship: qa_run
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: 'AI Review Launched'
+          exclude: false
+          alter:
+            alter_text: true
+            text: 'Yes'
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: 'No'
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_integer
+          settings:
+            thousand_separator: ''
+            prefix_suffix: true
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
         changed:
           id: changed
           table: node_field_revision
@@ -799,6 +846,15 @@ display:
           admin_label: User
           entity_type: node
           entity_field: uid
+          plugin_id: standard
+          required: false
+        qa_run:
+          id: qa_run
+          table: node_field_revision
+          field: qa_run
+          relationship: none
+          group_type: group
+          admin_label: 'QA Run'
           plugin_id: standard
           required: false
       header: {  }
