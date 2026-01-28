@@ -1,0 +1,73 @@
+id: word_document_migration
+label: 'Word Document Migration'
+migration_tags:
+  - content
+  - word
+source:
+  plugin: url
+  data_fetcher_plugin: file
+  data_parser_plugin: ai_word
+  # Add your Word document paths here (relative, absolute, or stream wrappers).
+  urls: []
+    # - modules/custom/ai_migration_word/data/sample.docx
+    # - public://imports/document.docx
+  ai_word:
+    # Model configuration is optional - uses system default AI provider if omitted.
+    # model:
+    #   provider_id: openai
+    #   model_id: gpt-4o
+    #   config:
+    #     temperature: 0
+    #     max_tokens: 8096
+    prompt:
+      -
+        role: system
+        operation: append
+        prompt: |
+          The content you are processing comes from a Word document, not HTML.
+          The text has been extracted and may include headings, paragraphs, lists, and table data.
+          Extract the main content including title, body text, and any relevant metadata.
+          Return the JSON object in a compressed format (minified, no extra whitespace).
+      -
+        role: user
+        operation: replace
+        prompt: |
+          Rules & Context for processing Word document content:
+
+          Content Rules:
+          1. The content is plain text extracted from a Word document.
+          2. Preserve the structure where possible (headings, paragraphs, lists).
+          3. Tables may appear as tab-separated values.
+
+          Date and Time Rules:
+          1. All unix timestamps in the final JSON must be in seconds, not milliseconds.
+          2. For the created_at and updated_at fields, use the current date and time in unix timestamp format.
+
+          This is the Word document content to be processed:
+          [ai:migration:content]
+  # Target entity type and bundle.
+  types:
+    - node:page
+  fields: []
+  ids:
+    url:
+      type: string
+process:
+  row:
+    plugin: row_passthrough
+    source: url
+  status:
+    plugin: default_value
+    default_value: 0
+  promote:
+    plugin: default_value
+    default_value: 0
+  sticky:
+    plugin: default_value
+    default_value: 0
+  langcode:
+    plugin: default_value
+    default_value: en
+destination:
+  plugin: 'entity:node'
+  default_bundle: page

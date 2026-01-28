@@ -1,0 +1,8 @@
+ai_migration_word.import_form:
+  path: '/admin/content/word-migration'
+  defaults:
+    _form: '\Drupal\ai_migration_word\Form\WordMigrationForm'
+    _title: 'Import Word Document'
+  requirements:
+    _permission: 'administer site configuration'
+
