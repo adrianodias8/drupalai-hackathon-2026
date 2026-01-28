@@ -270,6 +270,13 @@ class WordMigrationForm extends FormBase {
       );
 
       if ($result && !empty($result)) {
+        // Remove UUID from result to avoid duplicate key errors on re-import.
+        // Let Drupal generate a new UUID for each import.
+        unset($result['uuid']);
+
+        // Clean up entity reference fields that might have incomplete data.
+        $result = $this->cleanEntityReferences($result, $target_bundle);
+
         // Create the node.
         $node = $this->entityTypeManager->getStorage('node')->create([
           'type' => $target_bundle,
@@ -331,7 +338,33 @@ class WordMigrationForm extends FormBase {
   protected function extractElementText($element): string {
     $text = '';
 
-    // Handle elements with getText method.
+    // Handle table cells first (highest priority).
+    if (method_exists($element, 'getRows')) {
+      foreach ($element->getRows() as $row) {
+        if (method_exists($row, 'getCells')) {
+          foreach ($row->getCells() as $cell) {
+            $text .= $this->extractElementText($cell) . "\t";
+          }
+        }
+        $text .= "\n";
+      }
+      return $text;
+    }
+
+    // Handle container elements with nested elements.
+    // This prevents double extraction by only processing children, not getText().
+    if (method_exists($element, 'getElements')) {
+      foreach ($element->getElements() as $childElement) {
+        $text .= $this->extractElementText($childElement);
+      }
+      // If we processed child elements, don't also call getText()
+      // to avoid duplication.
+      if (!empty($text)) {
+        return $text;
+      }
+    }
+
+    // Handle leaf elements with getText method (only if no children were processed).
     if (method_exists($element, 'getText')) {
       $elementText = $element->getText();
       if (is_string($elementText)) {
@@ -349,26 +382,51 @@ class WordMigrationForm extends FormBase {
       }
     }
 
-    // Handle container elements with nested elements.
-    if (method_exists($element, 'getElements')) {
-      foreach ($element->getElements() as $childElement) {
-        $text .= $this->extractElementText($childElement);
-      }
-    }
+    return $text;
+  }
 
-    // Handle table cells.
-    if (method_exists($element, 'getRows')) {
-      foreach ($element->getRows() as $row) {
-        if (method_exists($row, 'getCells')) {
-          foreach ($row->getCells() as $cell) {
-            $text .= $this->extractElementText($cell) . "\t";
+  /**
+   * Clean entity reference fields with incomplete data.
+   *
+   * @param array $result
+   *   The AI migration result.
+   * @param string $bundle
+   *   The target bundle.
+   *
+   * @return array
+   *   The cleaned result.
+   */
+  protected function cleanEntityReferences(array $result, string $bundle): array {
+    // Get field definitions for the bundle.
+    $field_definitions = $this->entityFieldManager->getFieldDefinitions('node', $bundle);
+
+    foreach ($field_definitions as $field_name => $field_definition) {
+      // Check if this is an entity reference field.
+      if ($field_definition->getType() === 'entity_reference' && isset($result[$field_name])) {
+        $field_value = $result[$field_name];
+
+        // If the field value is an array of references.
+        if (is_array($field_value)) {
+          $cleaned_values = [];
+          foreach ($field_value as $value) {
+            // Only keep values that have a valid target_id.
+            if (is_array($value) && isset($value['target_id']) && !empty($value['target_id'])) {
+              $cleaned_values[] = $value;
+            }
+          }
+
+          // Update or remove the field based on cleaned values.
+          if (!empty($cleaned_values)) {
+            $result[$field_name] = $cleaned_values;
+          }
+          else {
+            unset($result[$field_name]);
           }
         }
-        $text .= "\n";
       }
     }
 
-    return $text;
+    return $result;
   }
 
   /**
