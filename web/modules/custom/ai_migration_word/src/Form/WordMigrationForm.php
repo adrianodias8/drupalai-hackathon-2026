@@ -227,6 +227,38 @@ class WordMigrationForm extends FormBase {
         return;
       }
 
+      // Hardcode the same prompt configuration used by the
+      // word_document_migration.yml migration so this form-based flow
+      // behaves identically to the migration-based flow.
+      $this->promptManager->setConfig([
+        [
+          'role' => 'system',
+          'operation' => 'append',
+          // Matches the system prompt in word_document_migration.yml.
+          'prompt' => "The content you are processing comes from a Word document, not HTML.\n"
+            . "The text has been extracted and may include headings, paragraphs, lists, and table data.\n"
+            . "Extract the main content including title, body text, and any relevant metadata.\n"
+            . "Return the JSON object in a compressed format (minified, no extra whitespace).",
+        ],
+        [
+          'role' => 'user',
+          'operation' => 'replace',
+          // Matches the user prompt in word_document_migration.yml.
+          'prompt' => "Rules & Context for processing Word document content:\n\n"
+            . "Content Rules:\n"
+            . "1. The content is plain text extracted from a Word document.\n"
+            . "2. Preserve the structure where possible (headings, paragraphs, lists).\n"
+            . "3. Tables may appear as tab-separated values.\n\n"
+            . "Date and Time Rules:\n"
+            . "1. All unix timestamps in the final JSON must be in seconds, not milliseconds.\n"
+            . "2. For the created_at and updated_at fields, use the current date and time in unix timestamp format.\n\n"
+            . "This is the Word document content to be processed:\n"
+            . "NEVER SUMMARIZE CHANGE OR REPLACE ANY OF THE CONTENT.\n"
+            . "Do a verbatim copy of the content. Do not summarize, rewrite, or change the content in any way.\n"
+            . "[ai:migration:content]",
+        ],
+      ]);
+
       // Use AI to convert content to entity data.
       $result = $this->aiMigrator->convert(
         $this->promptManager,
