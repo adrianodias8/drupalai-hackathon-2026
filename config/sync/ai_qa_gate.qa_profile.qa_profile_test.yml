@@ -33,27 +33,11 @@ include_meta:
   include_moderation_state: true
   include_taxonomy_labels: false
 policy_ids:
-  - ec_accessibility_clarity
-  - ec_digital_policy_baseline
-  - ec_legislative_precision
-  - ec_neutral_tone
+  - style_guide_accessibility_and_inclusivity_review
+  - style_guide_agent_tone_and_voice_review
+  - style_guide_seo_and_formatting_review
+  - style_guide_terminology_and_clarity_review
 reports_enabled:
-  -
-    plugin_id: claims_regulatory_precision
-    enabled: true
-    configuration:
-      check_absolute_claims: 1
-      check_legislative_status: 1
-      check_legal_interpretation: 1
-      check_attribution: 1
-  -
-    plugin_id: tone_neutrality_institutional
-    enabled: true
-    configuration:
-      check_promotional_language: 1
-      check_political_bias: 1
-      check_emotional_language: 1
-      check_self_congratulatory: 1
   -
     plugin_id: accessibility_clarity
     enabled: true
@@ -64,6 +48,14 @@ reports_enabled:
       max_sentence_words: '25'
       check_readability: 1
   -
+    plugin_id: claims_regulatory_precision
+    enabled: true
+    configuration:
+      check_absolute_claims: 1
+      check_legislative_status: 1
+      check_legal_interpretation: 1
+      check_attribution: 1
+  -
     plugin_id: pii_policy
     enabled: true
     configuration:
@@ -71,6 +63,14 @@ reports_enabled:
       check_contact_info: 1
       check_internal_references: 1
       check_confidential_markers: 1
+  -
+    plugin_id: tone_neutrality_institutional
+    enabled: true
+    configuration:
+      check_promotional_language: 1
+      check_political_bias: 1
+      check_emotional_language: 1
+      check_self_congratulatory: 1
 ai_settings:
   provider_id: amazeeio
   model: mistral-large-latest
