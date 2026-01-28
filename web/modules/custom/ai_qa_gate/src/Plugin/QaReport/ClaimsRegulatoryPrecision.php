@@ -115,6 +115,8 @@ You are an expert content reviewer specializing in EU/EC policy communications. 
 - **LOW**: Minor precision issues, stylistic concerns, potential ambiguities
 
 {$policies}
+
+{$this->buildTemporalContext()}
 EOT;
   }
 
