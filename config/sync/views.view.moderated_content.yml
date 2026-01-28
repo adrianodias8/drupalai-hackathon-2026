@@ -284,6 +284,38 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
+        severity_summary:
+          id: severity_summary
+          table: qa_run
+          field: severity_summary
+          relationship: qa_run
+          group_type: group
+          admin_label: ''
+          plugin_id: qa_run_severity_summary
+          label: 'AI Quality Check'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
         changed:
           id: changed
           table: node_field_revision
@@ -724,6 +756,7 @@ display:
             type: type
             name: name
             moderation_state: moderation_state
+            severity_summary: severity_summary
             changed: changed
           default: changed
           info:
@@ -750,6 +783,13 @@ display:
               responsive: ''
             moderation_state:
               sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            severity_summary:
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
@@ -799,6 +839,15 @@ display:
           admin_label: User
           entity_type: node
           entity_field: uid
+          plugin_id: standard
+          required: false
+        qa_run:
+          id: qa_run
+          table: node_field_revision
+          field: qa_run
+          relationship: none
+          group_type: group
+          admin_label: 'QA Run'
           plugin_id: standard
           required: false
       header: {  }

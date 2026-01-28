@@ -249,3 +249,37 @@ function ai_qa_gate_requirements(string $phase): array {
   return $requirements;
 }
 
+/**
+ * Implements hook_views_data_alter().
+ */
+function ai_qa_gate_views_data_alter(array &$data): void {
+  // Relate the node revision to its AI QA Run.
+  // We use node_field_revision as the base because that is what the
+  // moderated_content view uses.
+  $data['node_field_revision']['qa_run'] = [
+    'title' => t('QA Run'),
+    'help' => t('The QA Run associated with this revision.'),
+    'relationship' => [
+      'base' => 'qa_run',
+      'base field' => 'revision_id',
+      'field' => 'vid',
+      'id' => 'standard',
+      'label' => t('QA Run'),
+      'extra' => [
+        [
+          'field' => 'entity_type_id',
+          'value' => 'node',
+        ],
+      ],
+    ],
+  ];
+
+  // Add the severity summary matching field to qa_run.
+  $data['qa_run']['severity_summary'] = [
+    'title' => t('Severity Summary'),
+    'help' => t('Visual summary of findings by severity.'),
+    'field' => [
+      'id' => 'qa_run_severity_summary',
+    ],
+  ];
+}
