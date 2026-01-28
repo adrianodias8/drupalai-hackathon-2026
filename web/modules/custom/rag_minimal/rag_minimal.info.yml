@@ -1,0 +1,8 @@
+name: RAG Minimal
+type: module
+description: 'Minimal custom RAG module using Search API.'
+core_version_requirement: ^10 || ^11
+package: Custom
+dependencies:
+  - ai:ai
+  - search_api:search_api

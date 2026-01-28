@@ -1,0 +1,73 @@
+uuid: 6126cc1b-170f-4d87-aa67-1d30597cbd8c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_content
+    - search_api.server.backlinks
+  module:
+    - ai_search
+    - node
+id: create_references_to_articles
+name: 'create references to articles'
+description: ''
+read_only: false
+field_settings:
+  field_content:
+    label: Content
+    datasource_id: 'entity:node'
+    property_path: field_content
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_content
+  processed:
+    label: 'Content » Processed text'
+    datasource_id: 'entity:node'
+    property_path: 'field_content:processed'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_content
+  title:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: string
+    dependencies:
+      module:
+        - node
+  url:
+    label: URI
+    property_path: search_api_url
+    type: string
+    configuration:
+      absolute: false
+datasource_settings:
+  'entity:node':
+    bundles:
+      default: true
+      selected: {  }
+    languages:
+      default: true
+      selected: {  }
+processor_settings:
+  add_url: {  }
+  aggregated_field: {  }
+  ai_search_score_threshold:
+    weights:
+      postprocess_query: 0
+    minimum_relevance_score: '0.6'
+  custom_value: {  }
+  entity_type: {  }
+  language_with_fallback: {  }
+  rendered_item: {  }
+tracker_settings:
+  default:
+    indexing_order: fifo
+options:
+  cron_limit: 50
+  delete_on_fail: true
+  index_directly: true
+  track_changes_in_references: true
+server: backlinks

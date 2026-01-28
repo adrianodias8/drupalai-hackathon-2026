@@ -1,0 +1,16 @@
+rag_minimal.answer:
+  path: '/rag-minimal/answer'
+  defaults:
+    _controller: '\Drupal\rag_minimal\Controller\RagMinimalController::answer'
+    _title: 'RAG Minimal Answer'
+  requirements:
+    _permission: 'access content'
+  methods: [GET]
+
+rag_minimal.form:
+  path: '/rag-minimal'
+  defaults:
+    _form: '\Drupal\rag_minimal\Form\RagMinimalForm'
+    _title: 'Find References'
+  requirements:
+    _permission: 'access content'

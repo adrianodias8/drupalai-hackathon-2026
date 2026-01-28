@@ -1,0 +1,30 @@
+uuid: 6d69acd4-7d9e-4076-8d80-f1ae2eea0d96
+langcode: en
+status: true
+dependencies:
+  config:
+    - ai_provider_amazeeio.settings
+  module:
+    - ai_provider_amazeeio
+    - ai_search
+id: backlinks
+name: Backlinks
+description: ''
+backend: search_api_ai_search
+backend_config:
+  chat_model: amazeeio__claude-3-5-haiku
+  database: amazeeio_vector_db
+  database_settings:
+    collection: amazee_ai
+    metric: cosine_similarity
+  embeddings_engine: amazeeio__embeddings
+  embeddings_engine_configuration:
+    set_dimensions: false
+    dimensions: 1024
+  embedding_strategy: contextual_chunks
+  embedding_strategy_configuration:
+    chunk_size: '400'
+    chunk_min_overlap: '50'
+    contextual_content_max_percentage: '30'
+  embedding_strategy_details: ''
+  include_raw_embedding_vector: false

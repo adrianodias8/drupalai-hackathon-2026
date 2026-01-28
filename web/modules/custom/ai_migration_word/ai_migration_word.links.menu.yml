@@ -1,0 +1,7 @@
+ai_migration_word.import_form:
+  title: 'Import Word Document'
+  description: 'Import content from Word documents using AI.'
+  route_name: ai_migration_word.import_form
+  parent: system.admin
+  weight: 50
+

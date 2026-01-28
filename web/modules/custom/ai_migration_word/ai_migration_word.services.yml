@@ -1,0 +1,15 @@
+services:
+  # Decorate the ai_migrator service to use our extended version.
+  ai_migration_word.ai_migrator:
+    class: Drupal\ai_migration_word\AiMigratorWord
+    decorates: ai_migration.ai_migrator
+    arguments:
+      - '@ai.provider'
+      - '@ai_migration.cache_provider'
+      - '@logger.factory'
+      - '@http_client_factory'
+      - '@serializer'
+      - '@schemata.schema_factory'
+      - '@entity_field.manager'
+      - '@entity_type.manager'
+

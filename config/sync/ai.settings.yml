@@ -2,5 +2,23 @@ _core:
   default_config_hash: RGedRkFydKZjS0ZJ6vbtZH00KbhYVGsK-ABILHdQLyw
 prompt_logging: false
 prompt_logging_tags: ''
-default_providers: {  }
-default_vdb_provider: ''
+default_providers:
+  chat:
+    provider_id: amazeeio
+    model_id: claude-3-5-haiku
+  chat_with_complex_json:
+    provider_id: amazeeio
+    model_id: chat
+  chat_with_image_vision:
+    provider_id: amazeeio
+    model_id: chat
+  chat_with_structured_response:
+    provider_id: amazeeio
+    model_id: chat
+  chat_with_tools:
+    provider_id: amazeeio
+    model_id: chat
+  embeddings:
+    provider_id: amazeeio
+    model_id: embeddings
+default_vdb_provider: amazeeio_vector_db
