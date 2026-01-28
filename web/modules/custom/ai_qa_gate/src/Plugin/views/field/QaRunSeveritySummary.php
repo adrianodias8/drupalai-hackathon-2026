@@ -29,6 +29,16 @@ class QaRunSeveritySummary extends FieldPluginBase {
     $entity = $this->getEntity($values);
 
     if (!$entity instanceof QaRunInterface) {
+      $row_entity = $values->_entity ?? NULL;
+      if ($row_entity instanceof \Drupal\node\NodeInterface) {
+        $run_url = Url::fromRoute('ai_qa_gate.node_run', ['node' => $row_entity->id()]);
+        return [
+          '#type' => 'link',
+          '#title' => $this->t('Run AI Review'),
+          '#url' => $run_url,
+        ];
+      }
+
       return NULL;
     }
 
