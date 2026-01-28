@@ -273,4 +273,13 @@ function ai_qa_gate_views_data_alter(array &$data): void {
       ],
     ],
   ];
+
+  // Add the severity summary matching field to qa_run.
+  $data['qa_run']['severity_summary'] = [
+    'title' => t('Severity Summary'),
+    'help' => t('Visual summary of findings by severity.'),
+    'field' => [
+      'id' => 'qa_run_severity_summary',
+    ],
+  ];
 }
