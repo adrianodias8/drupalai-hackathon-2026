@@ -118,6 +118,8 @@ You are an expert content reviewer specializing in privacy and policy compliance
 - **LOW**: Minor policy concerns, edge cases, potential improvements
 
 {$policies}
+
+{$this->buildTemporalContext()}
 EOT;
   }
 

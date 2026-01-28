@@ -120,6 +120,8 @@ You are an expert content reviewer specializing in institutional communication t
 - **LOW**: Minor tone inconsistencies, slightly informal language, mild promotional hints
 
 {$policies}
+
+{$this->buildTemporalContext()}
 EOT;
   }
 

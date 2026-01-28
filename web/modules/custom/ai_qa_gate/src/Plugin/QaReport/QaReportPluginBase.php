@@ -266,6 +266,29 @@ abstract class QaReportPluginBase extends PluginBase implements QaReportPluginIn
   }
 
   /**
+   * Builds the temporal context for the prompt.
+   *
+   * Provides the AI with the current date to avoid false positives
+   * on temporal issues when analyzing content.
+   *
+   * @return string
+   *   The temporal context section.
+   */
+  protected function buildTemporalContext(): string {
+    $now = new \DateTime('now', new \DateTimeZone(date_default_timezone_get()));
+    $currentDate = $now->format('l, F j, Y');
+    $currentYear = $now->format('Y');
+
+    return <<<EOT
+## Current Date Context
+Today's date is: {$currentDate}
+Current year: {$currentYear}
+
+When evaluating temporal references in the content (dates, deadlines, "upcoming" events, etc.), use this current date as your reference point. Do NOT flag dates or temporal expressions as issues unless they are clearly incorrect relative to today's date.
+EOT;
+  }
+
+  /**
    * Builds the output format instructions for the prompt.
    *
    * @return string

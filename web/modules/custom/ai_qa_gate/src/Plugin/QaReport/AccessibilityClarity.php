@@ -129,6 +129,8 @@ You are an expert content reviewer specializing in accessibility and clarity of 
 - **LOW**: Minor clarity issues, stylistic improvements possible, edge-case acronyms
 
 {$policies}
+
+{$this->buildTemporalContext()}
 EOT;
   }
 
