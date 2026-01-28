@@ -1,0 +1,39 @@
+.rag-minimal-actions .button {
+  position: relative;
+  border-width: 2px;
+}
+
+.rag-minimal-approved {
+  border-color: #1f7a1f;
+  box-shadow: 0 0 10px rgba(38, 196, 38, 0.6);
+  background-color: #e6f6e6;
+}
+
+.rag-minimal-approved::after {
+  content: '✓';
+  color: #1f7a1f;
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
+
+.rag-minimal-rejected {
+  border-color: #b32020;
+  box-shadow: 0 0 10px rgba(235, 75, 75, 0.6);
+}
+
+.rag-minimal-link-success {
+  color: #1f7a1f;
+  font-weight: 600;
+}
+
+.rag-minimal-link-fail {
+  color: #b32020;
+  font-weight: 600;
+}
+
+.rag-minimal-rejected::after {
+  content: '✕';
+  color: #b32020;
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
